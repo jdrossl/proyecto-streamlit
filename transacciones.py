@@ -1,5 +1,5 @@
 import streamlit as st
-from db import get_transacciones, eliminar
+from .db import get_transacciones, eliminar
 
 def show():
     st.subheader("Historial de transacciones")

@@ -1,5 +1,5 @@
 import streamlit as st
-from db import insertar
+from .db import insertar
 
 CATEGORIAS = {
     "Gasto": ["Super", "Restaurantes", "Transporte", "Deuda", "Entretenimiento", "Otro"],

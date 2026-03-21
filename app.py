@@ -1,6 +1,6 @@
 import streamlit as st
-from db import init_db
-from views import inicio, transacciones, nueva
+from .db import init_db
+from . import inicio, transacciones, nueva
 
 init_db()
 

@@ -1,5 +1,5 @@
 import streamlit as st
-from db import get_transacciones
+from .db import get_transacciones
 
 def show():
     st.subheader("Resumen del mes")
