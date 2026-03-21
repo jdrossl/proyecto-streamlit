@@ -12,12 +12,18 @@ def init_db():
         CREATE TABLE IF NOT EXISTS transacciones (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             fecha TEXT NOT NULL,
-            descripcion TEXT NOT NULL,
+            titulo TEXT NOT NULL,
             categoria TEXT NOT NULL,
             tipo TEXT NOT NULL,
-            monto REAL NOT NULL
+            monto REAL NOT NULL,
+            notas TEXT
         )
     """)
+    # Alter table to add notas column if it doesn't exist
+    try:
+        conn.execute("ALTER TABLE transacciones ADD COLUMN notas TEXT")
+    except sqlite3.OperationalError:
+        pass
     conn.commit()
     conn.close()
 
@@ -27,11 +33,11 @@ def get_transacciones():
     conn.close()
     return df
 
-def insertar(fecha, descripcion, categoria, tipo, monto):
+def insertar(fecha, titulo, categoria, tipo, monto, notas=""):
     conn = get_conn()
     conn.execute(
-        "INSERT INTO transacciones (fecha, descripcion, categoria, tipo, monto) VALUES (?, ?, ?, ?, ?)",
-        (fecha, descripcion, categoria, tipo, monto)
+        "INSERT INTO transacciones (fecha, titulo, categoria, tipo, monto, notas) VALUES (?, ?, ?, ?, ?, ?)",
+        (fecha, titulo, categoria, tipo, monto, notas)
     )
     conn.commit()
     conn.close()

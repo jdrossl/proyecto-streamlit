@@ -1,5 +1,6 @@
 import streamlit as st
-from .db import insertar
+from datetime import datetime
+from ProyectoStreamlit.db import insertar
 
 CATEGORIAS = {
     "Gasto": ["Super", "Restaurantes", "Transporte", "Deuda", "Entretenimiento", "Otro"],
@@ -10,14 +11,26 @@ def show():
     st.subheader("Registrar transacción")
 
     tipo = st.radio("Tipo", ["Gasto", "Ingreso"], horizontal=True)
-    fecha = st.date_input("Fecha")
-    descripcion = st.text_input("Descripción")
+    titulo = st.text_input("Título")
     categoria = st.selectbox("Categoría", CATEGORIAS[tipo])
     monto = st.number_input("Monto (₡)", min_value=0.0, step=500.0)
 
+    # Inicializar variables con valores por defecto
+    fecha = datetime.now().date()
+    notas = ""
+    
+    with st.expander("Avanzado"):
+        fecha = st.date_input("Fecha", value=datetime.now())
+        notas = st.text_area("Notas", placeholder="Agregar notas opcionales...")
+
     if st.button("Guardar", type="primary"):
-        if descripcion and monto > 0:
-            insertar(str(fecha), descripcion, categoria, tipo, monto)
-            st.success("✅ Transacción guardada.")
+        if titulo and monto > 0:
+            insertar(str(fecha), titulo, categoria, tipo, monto, notas)
+            st.success("✅ Transacción guardada correctamente!")
+            # Cambiar a la pestaña de Transacciones después de 5 segundos
+            st.session_state.tab_index = 0
+            import time
+            time.sleep(5)
+            st.rerun()
         else:
-            st.warning("Completá la descripción y el monto.")
+            st.warning("Completá el título y el monto.")

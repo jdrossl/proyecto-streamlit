@@ -1,5 +1,6 @@
 import streamlit as st
-from .db import get_transacciones
+import plotly.graph_objects as go
+from ProyectoStreamlit.db import get_transacciones
 
 def show():
     st.subheader("Resumen del mes")
@@ -22,4 +23,6 @@ def show():
     if not gastos_df.empty:
         st.subheader("Gastos por categoría")
         por_categoria = gastos_df.groupby("categoria")["monto"].sum()
-        st.bar_chart(por_categoria)
+        
+        fig = go.Figure(data=[go.Pie(labels=por_categoria.index, values=por_categoria.values)])
+        st.plotly_chart(fig, use_container_width=True)
