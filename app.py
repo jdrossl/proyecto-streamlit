@@ -3,11 +3,13 @@ from pathlib import Path
 
 import streamlit as st
 
-# Add parent directory to path to enable explicit imports
-sys.path.insert(0, str(Path(__file__).parent.parent))
+# Add current directory to path for imports
+sys.path.insert(0, str(Path(__file__).parent))
 
-from ProyectoStreamlit.db import init_db
-from ProyectoStreamlit import reporte, transacciones, nueva
+from db import init_db
+from reporte import show as reporte_show
+from transacciones import show as transacciones_show
+from nueva import show as nueva_show
 
 init_db()
 
@@ -16,10 +18,10 @@ st.title("💰 Finanzas Personales")
 tabs = st.tabs(["Transacciones", "Reporte", "Nueva"])
 
 with tabs[0]:
-    transacciones.show()
+    transacciones_show()
 
 with tabs[1]:
-    reporte.show()
+    reporte_show()
 
 with tabs[2]:
-    nueva.show()
+    nueva_show()

@@ -1,6 +1,6 @@
 import streamlit as st
 from datetime import datetime
-from ProyectoStreamlit.db import insertar
+from db import insertar
 
 CATEGORIAS = {
     "Gasto": ["Super", "Restaurantes", "Transporte", "Deuda", "Entretenimiento", "Otro"],

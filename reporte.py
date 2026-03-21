@@ -1,6 +1,6 @@
 import streamlit as st
 import plotly.graph_objects as go
-from ProyectoStreamlit.db import get_transacciones
+from db import get_transacciones
 
 def show():
     st.subheader("Resumen del mes")
