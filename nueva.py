@@ -30,7 +30,7 @@ def show():
             # Cambiar a la pestaña de Transacciones después de 5 segundos
             st.session_state.tab_index = 0
             import time
-            time.sleep(5)
+            time.sleep(2)
             st.rerun()
         else:
             st.warning("Completá el título y el monto.")

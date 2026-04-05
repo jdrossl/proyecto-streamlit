@@ -17,7 +17,9 @@ def show():
     col1, col2, col3 = st.columns(3)
     col1.metric("Ingresos", f"₡{ingresos:,.0f}")
     col2.metric("Gastos", f"₡{gastos:,.0f}")
-    col3.metric("Balance", f"₡{balance:,.0f}", delta=f"₡{balance:,.0f}")
+    
+    balance_emoji = "🟢" if balance > 0 else "🟡" if balance == 0 else "🔴"
+    col3.metric(f"Balance {balance_emoji}", f"₡{balance:,.0f}", delta=f"₡{balance:,.0f}")
 
     gastos_df = df[df["tipo"] == "Gasto"]
     if not gastos_df.empty:
