@@ -3,6 +3,7 @@ import plotly.graph_objects as go
 import pandas as pd
 import json
 from datetime import datetime
+from babel.dates import format_date
 from db import get_transacciones
 
 def show():
@@ -12,8 +13,8 @@ def show():
     with col2:
         fecha_fin = st.date_input("Hasta", value=datetime.now())
     
-    # Mostrar título con el rango de fechas
-    titulo_fecha = f"{fecha_inicio.strftime('%d de %B')} - {fecha_fin.strftime('%d de %B de %Y')}"
+    # Mostrar título con el rango de fechas en español
+    titulo_fecha = f"{format_date(fecha_inicio, 'd de MMMM', locale='es_ES')} - {format_date(fecha_fin, 'd de MMMM de y', locale='es_ES')}"
     st.subheader(f"Resumen: {titulo_fecha}")
     
     df = get_transacciones(fecha_inicio, fecha_fin)
