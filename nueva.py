@@ -12,20 +12,22 @@ def show():
 
     tipo = st.radio("Tipo", ["Gasto", "Ingreso"], horizontal=True)
     titulo = st.text_input("Título")
-    categoria = st.selectbox("Categoría", CATEGORIAS[tipo])
+    categorias = st.multiselect("Categorías", CATEGORIAS[tipo])
     monto = st.number_input("Monto (₡)", min_value=0.0, step=500.0)
 
     # Inicializar variables con valores por defecto
     fecha = datetime.now().date()
     notas = ""
+    metodo = "efectivo"
     
     with st.expander("Avanzado"):
         fecha = st.date_input("Fecha", value=datetime.now())
         notas = st.text_area("Notas", placeholder="Agregar notas opcionales...")
+        metodo = st.selectbox("Método de pago", ["efectivo", "transferencia", "sinpe", "tarjeta"])
 
     if st.button("Guardar", type="primary"):
-        if titulo and monto > 0:
-            insertar(str(fecha), titulo, categoria, tipo, monto, notas)
+        if titulo and monto > 0 and categorias:
+            insertar(str(fecha), titulo, categoria, tipo, monto, notas, metodo)
             st.success("✅ Transacción guardada correctamente!")
             # Cambiar a la pestaña de Transacciones después de 5 segundos
             st.session_state.tab_index = 0

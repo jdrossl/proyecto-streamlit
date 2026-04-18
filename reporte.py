@@ -1,10 +1,22 @@
 import streamlit as st
 import plotly.graph_objects as go
+import pandas as pd
+import json
+from datetime import datetime
 from db import get_transacciones
 
 def show():
-    st.subheader("Resumen del mes")
-    df = get_transacciones()
+    col1, col2 = st.columns(2)
+    with col1:
+        fecha_inicio = st.date_input("Desde", value=datetime(datetime.now().year, datetime.now().month, 1))
+    with col2:
+        fecha_fin = st.date_input("Hasta", value=datetime.now())
+    
+    # Mostrar título con el rango de fechas
+    titulo_fecha = f"{fecha_inicio.strftime('%d de %B')} - {fecha_fin.strftime('%d de %B de %Y')}"
+    st.subheader(f"Resumen: {titulo_fecha}")
+    
+    df = get_transacciones(fecha_inicio, fecha_fin)
 
     if df.empty:
         st.info("Aún no hay transacciones registradas.")
@@ -24,7 +36,20 @@ def show():
     gastos_df = df[df["tipo"] == "Gasto"]
     if not gastos_df.empty:
         st.subheader("Gastos por categoría")
-        por_categoria = gastos_df.groupby("categoria")["monto"].sum()
+        por_categoria = {}
         
-        fig = go.Figure(data=[go.Pie(labels=por_categoria.index, values=por_categoria.values)])
-        st.plotly_chart(fig, use_container_width=True)
+        # Procesar cada transacción
+        for _, row in gastos_df.iterrows():
+            try:
+                categorias = json.loads(row["categoria"])
+            except (json.JSONDecodeError, TypeError):
+                categorias = [row["categoria"]]
+            
+            # Distribuir el monto entre las categorías de esa transacción
+            monto_por_categoria = row["monto"] / len(categorias)
+            for cat in categorias:
+                por_categoria[cat] = por_categoria.get(cat, 0) + monto_por_categoria
+        
+        if por_categoria:
+            fig = go.Figure(data=[go.Pie(labels=list(por_categoria.keys()), values=list(por_categoria.values()))])
+            st.plotly_chart(fig, use_container_width=True)
