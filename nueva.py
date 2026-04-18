@@ -3,7 +3,7 @@ from datetime import datetime
 from db import insertar
 
 CATEGORIAS = {
-    "Gasto": ["Super", "Restaurantes", "Transporte", "Deuda", "Entretenimiento", "Otro"],
+    "Gasto": ["Super", "Restaurantes", "Transporte", "Deuda", "Entretenimiento", "Inversión", "Ahorro", "Compras", "Otro"],
     "Ingreso": ["Salario", "Freelance", "Otro"]
 }
 
@@ -27,7 +27,7 @@ def show():
 
     if st.button("Guardar", type="primary"):
         if titulo and monto > 0 and categorias:
-            insertar(str(fecha), titulo, categoria, tipo, monto, notas, metodo)
+            insertar(str(fecha), titulo, categorias, tipo, monto, notas, metodo)
             st.success("✅ Transacción guardada correctamente!")
             # Cambiar a la pestaña de Transacciones después de 5 segundos
             st.session_state.tab_index = 0
@@ -35,4 +35,4 @@ def show():
             time.sleep(2)
             st.rerun()
         else:
-            st.warning("Completá el título y el monto.")
+            st.warning("Completá el título, el monto y selecciona al menos una categoría.")
