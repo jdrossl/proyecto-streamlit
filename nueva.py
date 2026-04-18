@@ -3,7 +3,7 @@ from datetime import datetime
 from db import insertar
 
 CATEGORIAS = {
-    "Gasto": ["Super", "Restaurantes", "Transporte", "Deuda", "Entretenimiento", "Inversión", "Ahorro", "Compras", "Otro"],
+    "Gasto": ["Alquiler", "Super", "Restaurantes", "Transporte", "Deuda", "Entretenimiento", "Inversión", "Ahorro", "Compras", "Otro"],
     "Ingreso": ["Salario", "Freelance", "Otro"]
 }
 
