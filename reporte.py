@@ -38,21 +38,40 @@ def show():
 
     gastos_df = df[df["tipo"] == "Gasto"]
     if not gastos_df.empty:
-        st.subheader("Gastos por categoría")
-        por_categoria = {}
+        # Procesar categorías
+        por_categoria_primera = {}
+        por_categoria_todas = {}
         
-        # Procesar cada transacción
         for _, row in gastos_df.iterrows():
             try:
                 categorias = json.loads(row["categoria"])
             except (json.JSONDecodeError, TypeError):
                 categorias = [row["categoria"]]
             
-            # Distribuir el monto entre las categorías de esa transacción
-            monto_por_categoria = row["monto"] / len(categorias)
+            # Para pastel: contar solo la primera categoría
+            primera_cat = categorias[0] if categorias else "Otro"
+            por_categoria_primera[primera_cat] = por_categoria_primera.get(primera_cat, 0) + row["monto"]
+            
+            # Para barras: sumar todas las categorías sin distribuir
             for cat in categorias:
-                por_categoria[cat] = por_categoria.get(cat, 0) + monto_por_categoria
+                por_categoria_todas[cat] = por_categoria_todas.get(cat, 0) + row["monto"]
         
-        if por_categoria:
-            fig = go.Figure(data=[go.Pie(labels=list(por_categoria.keys()), values=list(por_categoria.values()))])
-            st.plotly_chart(fig, use_container_width=True)
+        # Gráficos lado a lado
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            st.subheader("Distribución (primera categoría)")
+            if por_categoria_primera:
+                fig_pie = go.Figure(data=[go.Pie(labels=list(por_categoria_primera.keys()), values=list(por_categoria_primera.values()))])
+                st.plotly_chart(fig_pie, use_container_width=True)
+        
+        with col2:
+            st.subheader("Total por categoría")
+            if por_categoria_todas:
+                categorias_sorted = sorted(por_categoria_todas.items(), key=lambda x: x[1], reverse=True)
+                categories = [c[0] for c in categorias_sorted]
+                values = [c[1] for c in categorias_sorted]
+                
+                fig_bar = go.Figure(data=[go.Bar(x=categories, y=values)])
+                fig_bar.update_layout(xaxis_tickangle=-45, height=400)
+                st.plotly_chart(fig_bar, use_container_width=True)
